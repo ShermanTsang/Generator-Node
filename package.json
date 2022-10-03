@@ -8,11 +8,12 @@
   "types": "./dist/types/index.d.ts",
   "type": "module",
   "scripts": {
-    "serve": "nodemon --exec node --loader ts-node/esm ./src/index.ts",
+    "serve": "cross-env NODE_ENV=development nodemon --exec node --experimental-loader=ts-node/esm ./src/index.ts",
     "clean:dist": "rimraf ./dist",
-    "build:pkg": "npm run build && pkg . -t win --out-path=dist/",
+    "build": "npm run build:types && cross-env NODE_ENV=production rollup -c",
     "build:types": "npm run clean:dist && tsc -b ./tsconfig.types.json",
-    "build": "npm run build:types && rollup -c"
+    "build:pkg": "npm run build && pkg . --targets=win --out-path=dist/",
+    "generate:yeoman": "ts-node-esm script.ts --script generateYeoman"
   },
   "author": "ShermanT",
   "license": "ISC",
@@ -27,6 +28,7 @@
     "@types/node": "^18.7.20",
     "@typescript-eslint/eslint-plugin": "^5.38.0",
     "@typescript-eslint/parser": "^5.38.0",
+    "cross-env": "^7.0.3",
     "eslint": "^8.24.0",
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-prettier": "^4.2.1",

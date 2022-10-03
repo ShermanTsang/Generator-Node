@@ -11,3 +11,4 @@ setTimeout(() => {
 }, 50000);
 
 console.log(test);
+console.log(process.env.NODE_ENV);
