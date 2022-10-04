@@ -9,7 +9,8 @@
     "url": "https://share-man.com"
   },
   "files": [
-    "generators"
+    "app",
+    "router"
   ],
   "main": "generators/index.js",
   "keywords": [
