@@ -1,5 +1,5 @@
 {
-  "name": "test",
+  "name": "generator-sherman-node",
   "version": "1.0.0",
   "description": "test",
   "main": "./dist/index.js",
@@ -10,10 +10,11 @@
   "scripts": {
     "serve": "cross-env NODE_ENV=development nodemon --exec node --experimental-loader=ts-node/esm ./src/index.ts",
     "clean:dist": "rimraf ./dist",
+    "clean:yeoman": "rimraf ./generator/app/templates",
     "build": "npm run build:types && cross-env NODE_ENV=production rollup -c",
     "build:types": "npm run clean:dist && tsc -b ./tsconfig.types.json",
     "build:pkg": "npm run build && pkg . --targets=win --out-path=dist/",
-    "generate:yeoman": "ts-node-esm script.ts --script generateYeoman"
+    "generate:yeoman": "cross-env SCRIPT_NAME=generate:yeomanTemplate ts-node-esm ./script/index.ts"
   },
   "author": "ShermanT",
   "license": "ISC",
