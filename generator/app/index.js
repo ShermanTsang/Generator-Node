@@ -14,29 +14,37 @@ module.exports = class extends Generator {
   }
 
   prompting() {
-    this.log(yosay(`Welcome to the ${chalk.red("sherman-nuxt")} generator!\n`));
+    this.log(
+      yosay(`Welcome to the ${chalk.red("sherman-node")} project generator!\n`)
+    );
     const prompts = [
       {
         type: "input",
-        name: "name",
-        message: "The name of your project?",
-        default: this.appname
+        name: "projectName",
+        message: "The name of your project?"
+      },
+      {
+        type: "input",
+        name: "projectDescription",
+        message: "The description of your project?"
       },
       {
         type: "list",
-        name: "version",
-        message: "Which version and boilerplate of nuxt you wanna use?",
-        default: "v2",
+        name: "mode",
+        message: "Which mode and boilerplate of node project you wanna use?",
+        default: "mode1",
         choices: [
           {
-            key: "v2",
-            name: "Nuxt2.x + Webpack + JavaScript",
-            value: "v2"
+            key: "mode1",
+            name:
+              "Lang(TypeScript) + ModuleStandard(esm)+ Builder(rollup) + DevServer(nodemon) + Runtime(ts-node)",
+            value: "mode1"
           },
           {
-            key: "v3",
-            name: "Nuxt3.x + Vite + TypeScript",
-            value: "v3"
+            key: "mode2",
+            name:
+              "Lang(TypeScript) + ModuleStandard(esm)+ Builder(esbuild) + DevServer(nodemon) + Runtime(esno/tsx)",
+            value: "mode2"
           }
         ]
       }
@@ -59,15 +67,18 @@ module.exports = class extends Generator {
       )}\n`
     );
 
-    if (this.props.version === "v2") {
-      if (path.basename(this.destinationPath()) !== this.props.name) {
-        mkdirp(this.props.name);
+    if (this.props.mode === "mode1") {
+      if (path.basename(this.destinationPath()) !== this.props.projectName) {
+        console.log(1, this.props);
+        mkdirp(this.props.projectName);
+        console.log(2);
         this.log(
           `${chalk.bgGreen("[ Info ]")} create ${chalk.blue(
             this.destinationPath()
           )} director\n`
         );
-        this.destinationRoot(this.destinationPath(this.props.name));
+        this.destinationRoot(this.destinationPath(this.props.projectName));
+        console.log(3);
         this.log(
           `${chalk.bgYellow("[ Notice ]")} set destination path to ${chalk.blue(
             this.destinationPath()
@@ -76,16 +87,18 @@ module.exports = class extends Generator {
       }
     }
 
-    if (this.props.version === "v3") {
-      this.log(
-        `${chalk.bgGreen("[ Warning ]")} version3 is under construction\n`
-      );
+    if (this.props.mode === "mode2") {
+      this.log(`${chalk.bgGreen("[ Warning ]")} mode2 is under construction\n`);
     }
   }
 
   writing() {
+    this.renderTplFile();
+  }
+
+  renderTplFile() {
     const templatePath = path.normalize(
-      this.templatePath() + "/" + this.props.version
+      this.templatePath() + "/" + this.props.mode
     );
     this.log(
       `${chalk.bgGreen("[ Info ]")} target template director is ${chalk.blue(
@@ -97,9 +110,9 @@ module.exports = class extends Generator {
       fs.accessSync(templatePath);
       const templateFiles = [];
 
-      function fileMapper(filePath) {
+      const fileMapper = filePath => {
         const files = fs.readdirSync(filePath);
-        files.forEach(function (filename) {
+        files.forEach(function(filename) {
           const fileDir = path.join(filePath, filename);
           const stats = fs.statSync(fileDir);
           if (stats.isFile()) {
@@ -110,7 +123,7 @@ module.exports = class extends Generator {
             fileMapper(fileDir);
           }
         });
-      }
+      };
 
       fileMapper(templatePath);
 
@@ -122,7 +135,7 @@ module.exports = class extends Generator {
         this.fs.copyTpl(
           this.templatePath(fileBarePath),
           this.destinationPath(
-            path.normalize(fileBarePath.replace(this.props.version, "./"))
+            path.normalize(fileBarePath.replace(this.props.mode, "./"))
           ),
           this.props
         );
