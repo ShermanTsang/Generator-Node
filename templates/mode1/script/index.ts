@@ -1,15 +1,17 @@
 import * as child_process from 'child_process';
 import * as path from 'path';
-import fs from 'fs';
+import * as fs from 'fs';
 
-const isExist = (path: string) => {
-    if (!fs.existsSync(path)) {
-        fs.mkdirSync(path);
+const createDirectoryRecursively = (targetPath: any) => {
+    if (!fs.existsSync(path.dirname(targetPath))) {
+        createDirectoryRecursively(path.dirname(targetPath));
     }
+    fs.mkdirSync(targetPath);
+    console.log(`[ 创建文件夹 ] 已创建 ${targetPath} 文件夹`);
 };
 const copyFile = (sourcePath: string, targetPath: string, extraConfig?: { isRecursivelyCheck?: boolean }) => {
     const { isRecursivelyCheck = false } = extraConfig || {};
-    isExist(targetPath);
+    !fs.existsSync(targetPath) && createDirectoryRecursively(targetPath);
 
     const sourceFile = fs.readdirSync(sourcePath, { withFileTypes: true });
 
@@ -18,7 +20,6 @@ const copyFile = (sourcePath: string, targetPath: string, extraConfig?: { isRecu
         const newTargetPath = path.resolve(targetPath, file.name);
         console.log(`[ 拷贝${file.isDirectory() ? '目录' : '文件'} ] 源路径 ${newSourcePath} => 终路径 ${newTargetPath}`);
         if (file.isDirectory()) {
-            isExist(newTargetPath);
             isRecursivelyCheck && copyFile(newSourcePath, newTargetPath);
         } else {
             fs.copyFileSync(newSourcePath, newTargetPath);
@@ -30,14 +31,14 @@ const scriptMap = new Map();
 
 scriptMap.set('generate:yeomanTemplate', () => {
     try {
-        child_process.execSync('npm run clean:yeoman');
+        child_process.execSync('npm run @yeoman:clean');
         console.log('[ 清理旧文件 ] 清理 yeoman template 目录 成功');
     } catch (e) {
         console.log('[ 清理旧文件 ] 清理 yeoman template 目录 失败');
         console.log(e);
     }
-    copyFile(path.resolve('./'), path.resolve('.', 'generator', 'app', 'templates'));
-    copyFile(path.resolve('./src'), path.resolve('.', 'generator', 'app', 'templates', 'src'), { isRecursivelyCheck: true });
+    copyFile(path.resolve('./'), path.resolve('../../', 'generator', 'app', 'templates', 'mode1'));
+    copyFile(path.resolve('./src'), path.resolve('../../', 'generator', 'app', 'templates', 'mode1', 'src'), { isRecursivelyCheck: true });
 });
 
 if (scriptMap.has(process.env.SCRIPT_NAME)) {
