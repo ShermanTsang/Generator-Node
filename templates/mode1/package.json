@@ -44,5 +44,8 @@
     "typescript": "^4.8.3"
   },
   "bin": "./dist/index.js",
-  "pkg": {}
+  "pkg": {},
+  "dependencies": {
+    "dotenv": "^16.0.3"
+  }
 }
