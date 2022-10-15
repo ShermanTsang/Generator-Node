@@ -19,9 +19,12 @@
     "build:pkg-debug": "npm run build && pkg --debug --targets=win ./dist/index.cjs",
     "build:types": "npm run clean:dist && npm run copy:dts && tsc -b ./tsconfig.types.json",
     "copy:dts": "copyfiles --flat \"./src/**/*.d.ts\" \"./dist/typings\"",
-    "publish": "npm version patch && npm publish --registry=https://registry.npmjs.org",
+    "publish": "npm run build && npm version patch && npm publish --registry=https://registry.npmjs.org",
     "@yeoman:clean": "rimraf ../../generator/app/templates/mode1",
     "@yeoman:generate": "cross-env SCRIPT_NAME=generate:yeomanTemplate ts-node-esm ./script/index.ts"
+  },
+  "bin": {
+    "ews-frontend-bootstrap": "./bin/index.js"
   },
   "pkg": {
     "scripts": [
@@ -63,9 +66,13 @@
     "dotenv": "^16.0.3"
   },
   "files": [
-    "dist/**/*.js",
-    "dist/**/*.cjs",
-    "dist/**/*.mjs"
+    "*.cjs",
+    "*.mjs",
+    "*.json",
+    ".*",
+    "dist/*",
+    "bin/*",
+    "src/*"
   ],
   "excludes": [
     "dist/**/*.exe"
