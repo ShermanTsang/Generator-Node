@@ -15,11 +15,22 @@
     "dev:watch": "cross-env NODE_ENV=development nodemon --exec node --experimental-loader=ts-node/esm ./src/index.ts",
     "clean:dist": "rimraf ./dist",
     "build": "npm run build:types && cross-env NODE_ENV=production rollup -c",
-    "build:pkg": "npm run build && pkg . --targets=win --out-path=dist/",
+    "build:pkg": "npm run build && pkg --targets=win ./dist/index.cjs",
+    "build:pkg-debug": "npm run build && pkg --debug --targets=win ./dist/index.cjs",
     "build:types": "npm run clean:dist && npm run copy:dts && tsc -b ./tsconfig.types.json",
     "copy:dts": "copyfiles --flat \"./src/**/*.d.ts\" \"./dist/typings\"",
     "@yeoman:clean": "rimraf ../../generator/app/templates/mode1",
     "@yeoman:generate": "cross-env SCRIPT_NAME=generate:yeomanTemplate ts-node-esm ./script/index.ts"
+  },
+  "pkg": {
+    "scripts": [
+      "build/**/*.js"
+    ],
+    "assets": [],
+    "outputPath": "./dist",
+    "options": [
+      "experimental-modules"
+    ]
   },
   "devDependencies": {
     "@babel/core": "^7.19.1",
